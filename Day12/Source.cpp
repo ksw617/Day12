@@ -1,24 +1,55 @@
 #include <stdio.h>
 #include <Windows.h>
 
+#pragma region Enum
 enum Scene_ID
 {
 	LOGO,
 	MENU,
 	STAGE,
 };
+#pragma endregion
+
+
+#pragma region Struct
+
+struct Obj
+{
+	int x;
+	int y;
+	const char* shape;
+};
+
+#pragma endregion
 
 Scene_ID id;
 
-const char* logoImg[10][13];
-
-int aniIndex = 0;
+#pragma region Logo
+const char* logoImg[13];
 
 void LogoInitialize();
 void LogoProgress();
 void LogoRender();
 void LogoRelease();
+#pragma endregion
 
+#pragma region Menu
+const char* menuImg[8];
+
+int menuIndex;
+
+Obj* arrowText = nullptr;
+Obj* startText = nullptr;
+Obj* optionText = nullptr;
+Obj* exitText = nullptr;
+
+void MenuInitialize();
+void MenuProgress();
+void MenuRender();
+void MenuRelease();
+#pragma endregion
+
+#pragma region WinAPI
 void MoveCursorPosition(int x, int y)
 {
 	COORD pos;
@@ -27,6 +58,8 @@ void MoveCursorPosition(int x, int y)
 
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 }
+#pragma endregion
+
 
 
 int main()
@@ -45,7 +78,8 @@ int main()
 			LogoRender();
 			break;
 		case MENU:
-			printf("MENU\n");
+			MenuProgress();
+			MenuRender();
 			break;
 		case STAGE:
 			printf("STAGE\n");
@@ -58,160 +92,25 @@ int main()
 	}
 }
 
+#pragma region Logo
 void LogoInitialize()
 {
-	logoImg[0][0] = "    ..........           @@@@@    @@@@@.......";
-	logoImg[0][1] = "     .........          @     @  @     @.......";
-	logoImg[0][2] = "      ........             @@@   @     @........";
-	logoImg[0][3] = "       .......           @@      @     @  .......";
-	logoImg[0][4] = "        ......          @@@@@@@   @@@@@  th ......";
-	logoImg[0][5] = "         .....        ----------------------- .....";
-	logoImg[0][6] = "          ....          C  E  N  T  U  R  Y     ....";
-	logoImg[0][7] = "           ...        -----------------------     ...";
-	logoImg[0][8] = "            ..        @@@@@ @@@@@ @   @ @@@@@       ..";
-	logoImg[0][9] = "            ==          @   @      @ @    @          ==";
-	logoImg[0][10] = "          __||__        @   @@@@    @     @        __||__";
-	logoImg[0][11] = "         |      |       @   @      @ @    @       |      |";
-	logoImg[0][12] = "_________|______|_____  @   @@@@@ @   @   @  _____|______|_________";
-
-	logoImg[1][0]  = "     ..........          @@@@@    @@@@@.........";
-	logoImg[1][1]  = "      .........         @     @  @     @.........";
-	logoImg[1][2]  = "       ........            @@@   @     @ .........";
-	logoImg[1][3]  = "        .......          @@      @     @  .........";
-	logoImg[1][4]  = "        .......         @@@@@@@   @@@@@  th .......";
-	logoImg[1][5]  = "         .....        ----------------------- ......";
-	logoImg[1][6]  = "          ....          C  E  N  T  U  R  Y     ....";
-	logoImg[1][7]  = "           ...        -----------------------     ...";
-	logoImg[1][8]  = "            ..        @@@@@ @@@@@ @   @ @@@@@       ..";
-	logoImg[1][9]  = "            ==          @   @      @ @    @          ==";
-	logoImg[1][10] = "          __||__        @   @@@@    @     @        __||__";
-	logoImg[1][11] = "         |      |       @   @      @ @    @       |      |";
-	logoImg[1][12] = "_________|______|_____  @   @@@@@ @   @   @  _____|______|_________";
-
-	logoImg[2][0]  = "      ..........         @@@@@    @@@@@ ..........";
-	logoImg[2][1]  = "       .........        @     @  @     @ .........";
-	logoImg[2][2]  = "        ........           @@@   @     @  .........";
-	logoImg[2][3]  = "         .......         @@      @     @   ........";
-	logoImg[2][4]  = "         .......        @@@@@@@   @@@@@  th  .......";
-	logoImg[2][5]  = "          .....       ----------------------- .......";
-	logoImg[2][6]  = "           ....         C  E  N  T  U  R  Y     .....";
-	logoImg[2][7]  = "            ..        -----------------------     ....";
-	logoImg[2][8]  = "            ..        @@@@@ @@@@@ @   @ @@@@@       ..";
-	logoImg[2][9]  = "            ==          @   @      @ @    @          ==";
-	logoImg[2][10] = "          __||__        @   @@@@    @     @        __||__";
-	logoImg[2][11] = "         |      |       @   @      @ @    @       |      |";
-	logoImg[2][12] = "_________|______|_____  @   @@@@@ @   @   @  _____|______|_________";
-
-	logoImg[3][0]  = "        ..........       @@@@@    @@@@@   ..........";
-	logoImg[3][1]  = "         .........      @     @  @     @   .........";
-	logoImg[3][2]  = "         .........         @@@   @     @    ........";
-	logoImg[3][3]  = "          .......        @@      @     @     .......";
-	logoImg[3][4]  = "           .....        @@@@@@@   @@@@@  th   .......";
-	logoImg[3][5]  = "           .....      -----------------------  ......";
-	logoImg[3][6]  = "            ...         C  E  N  T  U  R  Y      .....";
-	logoImg[3][7]  = "            ..        -----------------------     ....";
-	logoImg[3][8]  = "            ..        @@@@@ @@@@@ @   @ @@@@@       ...";
-	logoImg[3][9]  = "            ==          @   @      @ @    @          ==";
-	logoImg[3][10] = "          __||__        @   @@@@    @     @        __||__";
-	logoImg[3][11] = "         |      |       @   @      @ @    @       |      |";
-	logoImg[3][12] = "_________|______|_____  @   @@@@@ @   @   @  _____|______|_________";
-
-	logoImg[4][0]  = "          .........      @@@@@    @@@@@     ..........";
-	logoImg[4][1]  = "          .........     @     @  @     @     .........";
-	logoImg[4][2]  = "          .........        @@@   @     @      ........";
-	logoImg[4][3]  = "           .......       @@      @     @       ........";
-	logoImg[4][4]  = "           ......       @@@@@@@   @@@@@  th     .......";
-	logoImg[4][5]  = "           .....      -----------------------    ......";
-	logoImg[4][6]  = "            ...         C  E  N  T  U  R  Y       .....";
-	logoImg[4][7]  = "            ..        -----------------------       ...";
-	logoImg[4][8]  = "            ..        @@@@@ @@@@@ @   @ @@@@@        ..";
-	logoImg[4][9]  = "            ==          @   @      @ @    @          ==";
-	logoImg[4][10] = "          __||__        @   @@@@    @     @        __||__";
-	logoImg[4][11] = "         |      |       @   @      @ @    @       |      |";
-	logoImg[4][12] = "_________|______|_____  @   @@@@@ @   @   @  _____|______|_________";
-
-	logoImg[5][0]  = "            .........    @@@@@    @@@@@        ..........";
-	logoImg[5][1]  = "            .........   @     @  @     @       ..........";
-	logoImg[5][2]  = "            ........       @@@   @     @        .........";
-	logoImg[5][3]  = "            .......      @@      @     @         .......";
-	logoImg[5][4]  = "            ......      @@@@@@@   @@@@@  th       ......";
-	logoImg[5][5]  = "            .....     -----------------------      .....";
-	logoImg[5][6]  = "            ....        C  E  N  T  U  R  Y         ....";
-	logoImg[5][7]  = "            ...       -----------------------        ..";
-	logoImg[5][8]  = "            ..        @@@@@ @@@@@ @   @ @@@@@        ..";
-	logoImg[5][9]  = "            ==          @   @      @ @    @          ==";
-	logoImg[5][10] = "          __||__        @   @@@@    @     @        __||__";
-	logoImg[5][11] = "         |      |       @   @      @ @    @       |      |";
-	logoImg[5][12] = "_________|______|_____  @   @@@@@ @   @   @  _____|______|_________";
-
-	logoImg[6][0]  = "              .......... @@@@@    @@@@@           .........";
-	logoImg[6][1]  = "              ......... @     @  @     @          .........";
-	logoImg[6][2]  = "             .........     @@@   @     @           ........";
-	logoImg[6][3]  = "             .......     @@      @     @            ......";
-	logoImg[6][4]  = "             ......     @@@@@@@   @@@@@  th         ......";
-	logoImg[6][5]  = "            ......    -----------------------        ....";
-	logoImg[6][6]  = "            .....       C  E  N  T  U  R  Y          ...";
-	logoImg[6][7]  = "            ....      -----------------------        ...";
-	logoImg[6][8]  = "            ..        @@@@@ @@@@@ @   @ @@@@@        ..";
-	logoImg[6][9]  = "            ==          @   @      @ @    @          ==";
-	logoImg[6][10] = "          __||__        @   @@@@    @     @        __||__";
-	logoImg[6][11] = "         |      |       @   @      @ @    @       |      |";
-	logoImg[6][12] = "_________|______|_____  @   @@@@@ @   @   @  _____|______|_________";
-
-	logoImg[7][0]  = "            ..........   @@@@@    @@@@@             ...........";
-	logoImg[7][1]  = "            .........   @     @  @     @            ..........";
-	logoImg[7][2]  = "            ........       @@@   @     @             ........";
-	logoImg[7][3]  = "            .......      @@      @     @             ........";
-	logoImg[7][4]  = "            ......      @@@@@@@   @@@@@  th          .......";
-	logoImg[7][5]  = "            .....     -----------------------        .....";
-	logoImg[7][6]  = "            ....        C  E  N  T  U  R  Y          ....";
-	logoImg[7][7]  = "            ...       -----------------------        ...";
-	logoImg[7][8]  = "            ..        @@@@@ @@@@@ @   @ @@@@@        ..";
-	logoImg[7][9]  = "            ==          @   @      @ @    @          ==";
-	logoImg[7][10] = "          __||__        @   @@@@    @     @        __||__";
-	logoImg[7][11] = "         |      |       @   @      @ @    @       |      |";
-	logoImg[7][12] = "_________|______|_____  @   @@@@@ @   @   @  _____|______|_________";
-
-	logoImg[8][0]  = "          ...........    @@@@@    @@@@@               ...........";
-	logoImg[8][1]  = "          ..........    @     @  @     @              ..........";
-	logoImg[8][2]  = "          .........        @@@   @     @              .........";
-	logoImg[8][3]  = "           ........      @@      @     @              ........";
-	logoImg[8][4]  = "           ......       @@@@@@@   @@@@@  th          ........";
-	logoImg[8][5]  = "           .....      -----------------------        .......";
-	logoImg[8][6]  = "            ....        C  E  N  T  U  R  Y          .....";
-	logoImg[8][7]  = "            ...       -----------------------        ....";
-	logoImg[8][8]  = "            ..        @@@@@ @@@@@ @   @ @@@@@        ...";
-	logoImg[8][9]  = "            ==          @   @      @ @    @          ==";
-	logoImg[8][10] = "          __||__        @   @@@@    @     @        __||__";
-	logoImg[8][11] = "         |      |       @   @      @ @    @       |      |";
-	logoImg[8][12] = "_________|______|_____  @   @@@@@ @   @   @  _____|______|_________";
-
-	logoImg[9][0]  = "        ...........      @@@@@    @@@@@                 ...........";
-	logoImg[9][1]  = "        ..........      @     @  @     @                ..........";
-	logoImg[9][2]  = "         ........          @@@   @     @               ..........";
-	logoImg[9][3]  = "          .......        @@      @     @               .........";
-	logoImg[9][4]  = "          ......        @@@@@@@   @@@@@  th           ........";
-	logoImg[9][5]  = "           .....      -----------------------         .......";
-	logoImg[9][6]  = "           ....         C  E  N  T  U  R  Y          .......";
-	logoImg[9][7]  = "            ...       -----------------------        .....";
-	logoImg[9][8]  = "            ..        @@@@@ @@@@@ @   @ @@@@@        ...";
-	logoImg[9][9]  = "            ==          @   @      @ @    @          ==";
-	logoImg[9][10] = "          __||__        @   @@@@    @     @        __||__";
-	logoImg[9][11] = "         |      |       @   @      @ @    @       |      |";
-	logoImg[9][12] = "_________|______|_____  @   @@@@@ @   @   @  _____|______|_________";
+	logoImg[0] = "    ..........           @@@@@    @@@@@.......";
+	logoImg[1] = "     .........          @     @  @     @.......";
+	logoImg[2] = "      ........             @@@   @     @........";
+	logoImg[3] = "       .......           @@      @     @  .......";
+	logoImg[4] = "        ......          @@@@@@@   @@@@@  th ......";
+	logoImg[5] = "         .....        ----------------------- .....";
+	logoImg[6] = "          ....          C  E  N  T  U  R  Y     ....";
+	logoImg[7] = "           ...        -----------------------     ...";
+	logoImg[8] = "            ..        @@@@@ @@@@@ @   @ @@@@@       ..";
+	logoImg[9] = "            ==          @   @      @ @    @          ==";
+	logoImg[10] = "          __||__        @   @@@@    @     @        __||__";
+	logoImg[11] = "         |      |       @   @      @ @    @       |      |";
+	logoImg[12] = "_________|______|_____  @   @@@@@ @   @   @  _____|______|_________";
 
 
 }
-
-
-
-
-
-
-
-
-
-
 
 
 void LogoProgress()
@@ -220,25 +119,152 @@ void LogoProgress()
 	{
 		id = MENU;
 		LogoRelease();
+		MenuInitialize();
 	}
 }
 
 void LogoRender()
 {
-	aniIndex++;
-
-	if (aniIndex >= 10)
-	{
-		aniIndex = 0;
-	}
-
 	for (int i = 0; i < 13; i++)
 	{
 		MoveCursorPosition(5, 5 + i);
-		printf(logoImg[aniIndex][i]);
+		printf(logoImg[i]);
 	}
 }
 
 void LogoRelease()
 {
 }
+
+#pragma endregion
+#pragma region Menu
+void MenuInitialize()
+{
+	 menuImg[0] = "'##::::'##:'########:'##::: ##:'##::::'##:";
+	 menuImg[1] = " ###::'###: ##.....:: ###:: ##: ##:::: ##:";
+	 menuImg[2] = " ####'####: ##::::::: ####: ##: ##:::: ##:";
+	 menuImg[3] = " ## ### ##: ######::: ## ## ##: ##:::: ##:";
+	 menuImg[4] = " ##. #: ##: ##...:::: ##. ####: ##:::: ##:";
+	 menuImg[5] = " ##:.:: ##: ##::::::: ##:. ###: ##:::: ##:";
+	 menuImg[6] = " ##:::: ##: ########: ##::. ##:. #######::";
+	 menuImg[7] = "..:::::..::........::..::::..:::.......:::";
+
+	 arrowText = (Obj*)malloc(sizeof(Obj));
+	 arrowText->x = 10;
+	 arrowText->y = 20;
+	 arrowText->shape = "¢º";
+
+	 startText = (Obj*)malloc(sizeof(Obj));
+	 startText->x = 15;
+	 startText->y = 20;
+	 startText->shape = "START";
+
+	 optionText = (Obj*)malloc(sizeof(Obj));
+	 optionText->x = 15;
+	 optionText->y = 22;
+	 optionText->shape = "OPTION";
+
+	 exitText = (Obj*)malloc(sizeof(Obj));
+	 exitText->x = 15;
+	 exitText->y = 24;
+	 exitText->shape = "EXIT";
+
+}
+
+
+void MenuProgress()
+{
+	if (GetAsyncKeyState(VK_UP))
+	{
+		if (arrowText->y > startText->y)
+		{
+			arrowText->y -= 2;
+			menuIndex--;
+		}
+
+	}
+	if (GetAsyncKeyState(VK_DOWN))
+	{
+
+		if (arrowText->y < exitText->y)
+		{
+			arrowText->y += 2;
+			menuIndex++;
+		}
+		
+	}
+
+	if (GetAsyncKeyState(VK_RETURN))
+	{
+		switch (menuIndex)
+		{
+		case 0:
+			id = STAGE;
+			MenuRelease();
+			break;
+
+		case 2:
+		//	exit(true);
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+void MenuRender()
+{
+	if (id == STAGE)
+	{
+		return;
+	}
+
+	for (int i = 0; i < 8; i++)
+	{
+		MoveCursorPosition(5, 5 + i);
+		printf(menuImg[i]);
+	}
+
+	MoveCursorPosition(arrowText->x , arrowText->y);
+	printf(arrowText->shape);
+
+	MoveCursorPosition(startText->x, startText->y);
+	printf(startText->shape);
+
+	MoveCursorPosition(optionText->x, optionText->y);
+	printf(optionText->shape);
+
+	MoveCursorPosition(exitText->x, exitText->y);
+	printf(exitText->shape);
+}
+
+void MenuRelease()
+{
+	if (arrowText != nullptr)
+	{
+		free(arrowText);
+		arrowText = nullptr;
+	}
+
+	if (startText != nullptr)
+	{
+		free(startText);
+		startText = nullptr;
+	}
+
+	if (optionText != nullptr)
+	{
+		free(optionText);
+		optionText = nullptr;
+	}
+
+	if (exitText != nullptr)
+	{
+		free(exitText);
+		exitText = nullptr;
+	}
+}
+#pragma endregion
+
+
+
