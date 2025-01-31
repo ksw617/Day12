@@ -256,6 +256,25 @@ int main()
 
 				}
 
+				if (player->x <= items[i]->x && items[i]->x < player->x + 7 &&
+					player->y <= items[i]->y && items[i]->y < player->y + 3)
+				{
+					items[i]->act = false;
+					switch (items[i]->type)
+					{
+					case BULLET:
+						break;
+					case HEART:
+						player->hp++;
+						break;
+					case SPEED:
+						break;
+					default:
+						break;
+
+					}
+				}
+
 			}
 		}
 
