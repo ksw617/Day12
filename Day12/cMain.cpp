@@ -51,7 +51,22 @@ struct Obj
 
 };
 
+#define BulletCount 10
+
+struct Bullet
+{
+	bool act;
+	int x;
+	int y;
+	Color color;
+	const char* shape;
+
+};
+
+
 Obj* player = nullptr;
+Bullet* bullets[BulletCount] = {};
+
 
 int main()
 {
@@ -104,18 +119,53 @@ int main()
 	player->shape[9][2] = "      -'-`-";
 
 
+	for (int i = 0; i < BulletCount; i++)
+	{
+		bullets[i] = (Bullet*)malloc(sizeof(Bullet));
+		bullets[i]->act = false;
+		bullets[i]->x = i;
+		bullets[i]->y = 0;
+		bullets[i]->shape = "¡Ü";
+		bullets[i]->color = MAGENTA;
+	}
 
 
 
 	while (true)
 	{
+
+		if (GetAsyncKeyState(VK_LEFT))
+		{
+			player->x--;
+		}
+		if (GetAsyncKeyState(VK_RIGHT))
+		{
+			player->x++;
+		}
+
+		if (GetAsyncKeyState(VK_UP))
+		{
+			player->y--;
+		}
+
+		if (GetAsyncKeyState(VK_DOWN))
+		{
+			player->y++;
+		}
+
+
+
 		player->aniIndex++;
 		player->aniIndex %= 10;
 		
 		for (int i = 0; i < 3; i++)
 		{
-
 			WriteBuffer(player->x, player->y + i, player->shape[player->aniIndex][i], player->color);
+		}
+
+		for (int i = 0; i < BulletCount; i++)
+		{
+			WriteBuffer(bullets[i]->x, bullets[i]->y, bullets[i]->shape, bullets[i]->color);
 		}
 
 		FlipBuffer();
