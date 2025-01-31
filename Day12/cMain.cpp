@@ -44,6 +44,7 @@ enum Color
 struct Obj
 {
 	int aniIndex;
+	int hp;
 	int x;
 	int y;
 	Color color;
@@ -51,7 +52,7 @@ struct Obj
 
 };
 
-#define BulletCount 10
+#define BulletCount 5
 
 struct Bullet
 {
@@ -61,6 +62,24 @@ struct Bullet
 	Color color;
 	const char* shape;
 
+};
+
+enum ITEM_TYPE
+{
+	BULLET,
+	HEART,
+	SPEED,
+
+};
+
+struct Item
+{
+	bool act;
+	ITEM_TYPE type;
+	int x;
+	int y;
+	Color color;
+	const char* shape;
 };
 
 
@@ -75,6 +94,7 @@ int main()
 
 	player = (Obj*)malloc(sizeof(Obj));
 	player->aniIndex = 0;
+	player->hp = 3;
 	player->x = 10;
 	player->y = 10;
 	player->color = YELLOW;
@@ -209,6 +229,12 @@ int main()
 		for (int i = 0; i < 3; i++)
 		{
 			WriteBuffer(player->x, player->y + i, player->shape[player->aniIndex][i], player->color);
+		}
+
+		for (int i = 1; i <= player->hp; i++)
+		{
+			int screenRight = BufferWidth / 2;
+			WriteBuffer(screenRight - i, 0, "¢¾", RED);
 		}
 
 		for (int i = 0; i < BulletCount; i++)
