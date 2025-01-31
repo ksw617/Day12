@@ -180,8 +180,15 @@ int main()
 		{
 			if (bullets[i]->act)
 			{
-
 				bullets[i]->x++;
+
+				int screenRight = BufferWidth / 2;
+				if (bullets[i]->x >= screenRight)
+				{
+					bullets[i]->act = false;
+					bullets[i]->x = i;
+					bullets[i]->y = 0;
+				}
 
 			}
 		}
