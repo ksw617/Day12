@@ -153,6 +153,29 @@ int main()
 			player->y++;
 		}
 
+		if (GetAsyncKeyState(VK_SPACE))
+		{
+
+			for (int i = 0; i < BulletCount; i++)
+			{
+
+				if (bullets[i]->act == false)
+				{
+
+					bullets[i]->x = player->x + 6;
+					bullets[i]->y = player->y + 1;
+
+
+					bullets[i]->act = true;
+					break;
+
+				}
+
+
+			}
+
+		}
+
 
 
 		player->aniIndex++;
