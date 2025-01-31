@@ -1,6 +1,23 @@
 #include <stdio.h>
 #include <Windows.h>
 
+#pragma region DoubleBuffer
+//버퍼 초기화
+#define BufferWidth 80	// 가로 버퍼 크기
+#define BufferHeight 40 // 세로 버퍼 크기
+
+
+HANDLE hBuffer[2];	//창 두게를 제어하는 핸들
+int screenIndex;	//hBuffer[screenIndex], screenIndex == 0 or 1
+
+
+void InitBuffer();
+void FlipBuffer();
+void ClearBuffer();
+void WriteBuffer(int x, int y, const char* shape, int color);
+void CloseBuffer();
+
+#pragma endregion
 #pragma region Enum
 enum Color
 {
@@ -24,40 +41,91 @@ enum Color
 
 #pragma endregion
 
+struct Obj
+{
+	int aniIndex;
+	int x;
+	int y;
+	Color color;
+	const char* shape[10][3];
 
-#pragma region DoubleBuffer
-//버퍼 초기화
-#define BufferWidth 80	// 가로 버퍼 크기
-#define BufferHeight 40 // 세로 버퍼 크기
+};
 
-
-HANDLE hBuffer[2];	//창 두게를 제어하는 핸들
-int screenIndex;	//hBuffer[screenIndex], screenIndex == 0 or 1
-
-
-void InitBuffer();
-void FlipBuffer();
-void ClearBuffer();
-void WriteBuffer(int x, int y, const char* shape, int color);
-void CloseBuffer();
-
-#pragma endregion
+Obj* player = nullptr;
 
 int main()
 {
 	InitBuffer();
 
+
+	player = (Obj*)malloc(sizeof(Obj));
+	player->aniIndex = 0;
+	player->x = 10;
+	player->y = 10;
+	player->color = YELLOW;
+	player->shape[0][0] = "   -----|-----";
+	player->shape[0][1] = "*>=====[_]L)";
+	player->shape[0][2] = "      -'-`-";
+
+	player->shape[1][0] = "    ----|---- ";
+	player->shape[1][1] = "*>=====[_]L)";
+	player->shape[1][2] = "      -'-`-";
+
+	player->shape[2][0] = "     ---|---";
+	player->shape[2][1] = "*>=====[_]L)";
+	player->shape[2][2] = "      -'-`-";
+
+	player->shape[3][0] = "      --|--";
+	player->shape[3][1] = "*>=====[_]L)";
+	player->shape[3][2] = "      -'-`-";
+
+	player->shape[4][0] = "       ---";
+	player->shape[4][1] = "*>=====[_]L)";
+	player->shape[4][2] = "      -'-`-";
+
+	player->shape[5][0] = "        -";
+	player->shape[5][1] = "*>=====[_]L)";
+	player->shape[5][2] = "      -'-`-";
+
+	player->shape[6][0] = "       ---";
+	player->shape[6][1] = "*>=====[_]L)";
+	player->shape[6][2] = "      -'-`-";
+
+	player->shape[7][0] = "      --|--";
+	player->shape[7][1] = "*>=====[_]L)";
+	player->shape[7][2] = "      -'-`-";
+
+	player->shape[8][0] = "     ---|---";
+	player->shape[8][1] = "*>=====[_]L)";
+	player->shape[8][2] = "      -'-`-";
+
+	player->shape[9][0] = "    ----|---- ";
+	player->shape[9][1] = "*>=====[_]L)";
+	player->shape[9][2] = "      -'-`-";
+
+
+
+
+
 	while (true)
 	{
-		//printf("Hello world");
-		WriteBuffer(10, 10, "Hello world", LIGHTMAGENTA);
-		//Todo
+		player->aniIndex++;
+		player->aniIndex %= 10;
+		
+		for (int i = 0; i < 3; i++)
+		{
+
+			WriteBuffer(player->x, player->y + i, player->shape[player->aniIndex][i], player->color);
+		}
 
 		FlipBuffer();
 		ClearBuffer();
 
 		Sleep(50);
 	}
+
+	CloseBuffer();
+
 	return 0;
 }
 
