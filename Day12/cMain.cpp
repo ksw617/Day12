@@ -137,6 +137,10 @@ int main()
 		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 		{
 			player->x--;
+			if (player->x < 0)
+			{
+				player->x = 0;
+			}
 		}
 		if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 		{
@@ -146,6 +150,10 @@ int main()
 		if (GetAsyncKeyState(VK_UP) & 0x8000)
 		{
 			player->y--;
+			if (player->y < 1)
+			{
+				player->y = 1;
+			}
 		}
 
 		if (GetAsyncKeyState(VK_DOWN) & 0x8000)
