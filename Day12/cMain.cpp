@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <Windows.h>
+#include <time.h>
 
 #pragma region DoubleBuffer
 //버퍼 초기화
@@ -70,6 +71,8 @@ enum ITEM_TYPE
 	HEART,
 	SPEED,
 
+	Item_Count,
+
 };
 
 struct Item
@@ -85,10 +88,15 @@ struct Item
 
 Obj* player = nullptr;
 Bullet* bullets[BulletCount] = {};
+Item* items[Item_Count] = {};
 
 
 int main()
 {
+	srand((unsigned)time(NULL));
+
+
+	const int screenRight = BufferWidth / 2;
 	InitBuffer();
 
 
@@ -149,6 +157,21 @@ int main()
 		bullets[i]->color = MAGENTA;
 	}
 
+	for (int i = 0; i < Item_Count; i++)
+	{
+		items[i] = (Item*)malloc(sizeof(Item));
+		items[i]->act = false;
+		items[i]->type = (ITEM_TYPE)i;
+		items[i]->x = 0;
+		items[i]->y = 0;
+		items[i]->color = LIGHTGREEN;
+		items[i]->shape = "▣";
+	}
+
+	//test
+	items[1]->act = true;
+	items[1]->x = screenRight - 1;
+	items[1]->y = rand() % BufferHeight;
 
 
 	while (true)
@@ -210,7 +233,6 @@ int main()
 			{
 				bullets[i]->x++;
 
-				int screenRight = BufferWidth / 2;
 				if (bullets[i]->x >= screenRight)
 				{
 					bullets[i]->act = false;
@@ -221,6 +243,21 @@ int main()
 			}
 		}
 
+
+		for (int i = 0; i < Item_Count; i++)
+		{
+			if (items[i]->act)
+			{
+				items[i]->x--;
+				
+				if (items[i]->x < 0)
+				{
+					items[i]->act = false;
+
+				}
+
+			}
+		}
 
 
 		player->aniIndex++;
@@ -233,13 +270,22 @@ int main()
 
 		for (int i = 1; i <= player->hp; i++)
 		{
-			int screenRight = BufferWidth / 2;
-			WriteBuffer(screenRight - i, 0, "♥", RED);
+		
+			WriteBuffer(screenRight - i, 0, "♥", LIGHTRED);
 		}
 
 		for (int i = 0; i < BulletCount; i++)
 		{
 			WriteBuffer(bullets[i]->x, bullets[i]->y, bullets[i]->shape, bullets[i]->color);
+		}
+
+
+		for (int i = 0; i < Item_Count; i++)
+		{
+			if (items[i]->act)
+			{
+				WriteBuffer(items[i]->x, items[i]->y, items[i]->shape, items[i]->color);
+			}
 		}
 
 		FlipBuffer();
